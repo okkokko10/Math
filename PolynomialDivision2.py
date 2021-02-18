@@ -113,6 +113,8 @@ class Poly(dict):
             out += coeff.Latex((out!=''),(i>0)) + (i>0)*'x' + (i>1)*('^{'+str(i)+'}')
         return out
 def ReadHistory(history,dividend,divisor):
+    dividend=Poly(dividend)
+    divisor=Poly(divisor)
     divExp=max(divisor.keys())
     divCoeff=Fraction(divisor[divExp])
     div =Poly({divExp:divCoeff})
@@ -135,13 +137,25 @@ def ReadHistory(history,dividend,divisor):
     out+='\\end{array}'
     return out
 
-a=Poly({1:4,4:2,0:-3})
-b=Poly({2:5,1:4,0:5})
-c=a/b
-# print('...')
-# print(a)
-# print(b)
-# print(c[0])
-# print(c[1])
-# print(',,,')
-print(ReadHistory(c[2],a,b))
+def Divide(dividend,divisor,autoPrint=True):
+    """The main function. 
+        outputs LaTeX code that you have to copy into something that accepts LaTeX.
+        dividend and divisor are both polynomials
+        expressed as dictionaries where the terms are key-value pairs, 
+        with the key being the exponent and the value being the coefficient.
+        for example, 4x³-x+5 is written as {3:4,1:-1,0:5}
+        ⁰¹²³⁴⁵⁶⁷⁸⁹
+        to get 
+        (4x³-x+5):(2x-1)
+        use
+        Divide({3:4,1:-1,0:5},{1:2,0:-1})
+
+        """
+    c=Poly(dividend)/Poly(divisor)
+    r=ReadHistory(c[2],dividend,divisor)
+    if autoPrint:
+        print(r)
+    return r
+
+if __name__=='__main__':
+    Divide({1:4,4:2,0:-3},{2:5,1:4,0:5})
